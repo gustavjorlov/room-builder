@@ -1,13 +1,14 @@
 import React, { useEffect, useRef } from "react";
 import "./App.css";
-import * as THREE from "three";
 import { threeRenderer } from "./three/setup";
 
 const App = () => {
   const canvasEl = useRef<HTMLDivElement>(null);
+  const height = 350;
+  const width = 400;
   useEffect(() => {
     if (canvasEl && canvasEl.current) {
-      const renderer = threeRenderer(400, 300);
+      const renderer = threeRenderer(width, height);
       canvasEl.current.appendChild(renderer.domElement);
     }
   }, []);
@@ -17,8 +18,8 @@ const App = () => {
       <div
         ref={canvasEl}
         style={{
-          width: 400,
-          height: 300,
+          width: width,
+          height: height,
           border: "1px solid #ddd",
           margin: "0px auto",
         }}
