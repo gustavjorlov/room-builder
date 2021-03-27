@@ -140,21 +140,8 @@ export const threeRenderer = (
     if (selectedMesh) {
       selectedMesh.position.y += 0.01 * Math.sin(timeAlive / 1000);
       selectedMesh.position.x += 0.01 * Math.sin(1.57 + timeAlive / 1000);
-      // selectedMesh.rotation.x += 0.02;
-      // selectedMesh.rotation.y += 0.02;
-      // selectedMesh.rotation.z += 0.02;
+      selectedMesh.rotation.y += 0.02;
     }
-    // selectedMesh?.rotation.x += 0.01;
-    // selectedMesh?.rotation.y += 0.01;
-    // raycaster.setFromCamera(mouse, camera);
-    // const intersects: THREE.Intersection[] = raycaster.intersectObjects(
-    //   scene.children
-    // );
-    // if (intersects.length > 0) {
-    //   const obj = intersects[0].object as THREE.Mesh;
-    //   const mat = obj.material as THREE.MeshStandardMaterial;
-    //   mat.color.set(0xff0000);
-    // }
   };
 
   animate(0);
