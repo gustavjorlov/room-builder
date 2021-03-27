@@ -86,14 +86,10 @@ const handleInteractions = (
     type: DispatchEventType,
     intersections: THREE.Intersection[]
   ) => {
-    if (intersections.length > 0) {
-      dispatch({
-        type,
-        id: intersections[0].object.id,
-      });
-    } else {
-      dispatch({ type, id: null });
-    }
+    dispatch({
+      type,
+      id: intersections.length > 0 ? intersections[0].object.id : null,
+    });
   };
 
   const onSelect = (e: MouseEvent) => {
