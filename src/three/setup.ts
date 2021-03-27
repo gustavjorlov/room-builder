@@ -13,6 +13,7 @@ const setupScene = (
   const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
   const renderer = new THREE.WebGLRenderer();
   renderer.setSize(width, height);
+  buildWorld(scene);
   return { scene, camera, renderer };
 };
 
@@ -20,7 +21,7 @@ const getCubeMesh = (
   size: number
 ): Mesh<THREE.BoxGeometry, THREE.MeshStandardMaterial> => {
   const geometry = new THREE.BoxGeometry(size, size, size);
-  const material = new THREE.MeshStandardMaterial({ color: 0x7e31eb });
+  const material = new THREE.MeshStandardMaterial({ color: 0xdddddd });
   return new THREE.Mesh(geometry, material);
 };
 
@@ -31,6 +32,23 @@ const buildWorld = (_scene: THREE.Scene) => {
     cube.rotation.set(Math.random(), Math.random(), Math.random());
     _scene.add(cube);
   }
+  const light = new THREE.PointLight(0xff0000, 1, 100);
+  light.position.set(1, 0, 2);
+  _scene.add(light);
+
+  const light2 = new THREE.PointLight(0x00ff00, 1, 100);
+  light2.position.set(-1, 0, 0);
+  _scene.add(light2);
+
+  const floor = new THREE.Mesh(
+    new THREE.PlaneGeometry(6, 6),
+    new THREE.MeshBasicMaterial({ color: 0xffff00, side: THREE.DoubleSide })
+  );
+  floor.rotation.x = Math.PI / 2;
+  floor.position.y = -1;
+  _scene.add(floor);
+  _scene.add(new THREE.HemisphereLight(0xffffbb, 0x080820));
+  _scene.add(new THREE.DirectionalLight(0xff0000, 1));
 };
 
 type DispatchEventType = "click" | "hover";
@@ -91,12 +109,13 @@ export const threeRenderer = (
   width: number,
   height: number
 ): THREE.WebGLRenderer => {
-  const { scene, camera, renderer } = setupScene(width, height);
   let selectedMesh: THREE.Object3D | null = null;
   let hoveredMesh: THREE.Object3D | null = null;
 
-  buildWorld(scene);
+  const { scene, camera, renderer } = setupScene(width, height);
+  camera.position.z = 3;
 
+  // TODO: develop this redux like thing
   const dispatch = (event: DispatchEvent) => {
     if (event.type === "click") {
       if (event.id) selectedMesh = scene.getObjectById(event.id) || null;
@@ -110,13 +129,6 @@ export const threeRenderer = (
 
   handleInteractions(renderer, scene, camera, width, height, dispatch);
 
-  const light = new THREE.HemisphereLight(0xffffbb, 0x080820);
-  scene.add(light);
-
-  camera.position.z = 3;
-
-  console.log(scene);
-
   const animate = (ms: number) => {
     requestAnimationFrame(animate);
     update(ms);
@@ -124,16 +136,15 @@ export const threeRenderer = (
   };
 
   const update = (timeAlive: number) => {
-    // console.log("timeAlive", Math.round(timeAlive));
     if (hoveredMesh) {
       ((hoveredMesh as THREE.Mesh)
-        .material as THREE.MeshStandardMaterial).color.set(0x990099);
+        .material as THREE.MeshStandardMaterial).color.set(0xdddddd);
     } else {
       scene.children
         .filter((c) => c.type === "Mesh")
         .forEach((c) => {
           ((c as THREE.Mesh).material as THREE.MeshStandardMaterial).color.set(
-            0xdddddd
+            0x888888
           );
         });
     }
