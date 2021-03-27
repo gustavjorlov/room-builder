@@ -14,6 +14,7 @@ const setupScene = (
   const renderer = new THREE.WebGLRenderer();
   renderer.setSize(width, height);
   buildWorld(scene);
+  camera.position.z = 3;
   return { scene, camera, renderer };
 };
 
@@ -113,7 +114,6 @@ export const threeRenderer = (
   let hoveredMesh: THREE.Object3D | null = null;
 
   const { scene, camera, renderer } = setupScene(width, height);
-  camera.position.z = 3;
 
   // TODO: develop this redux like thing
   const dispatch = (event: DispatchEvent) => {
