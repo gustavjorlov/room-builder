@@ -25,14 +25,12 @@ const getCubeMesh = (
 };
 
 const buildWorld = (_scene: THREE.Scene) => {
-  const cube1 = getCubeMesh(1);
-  const cube2 = getCubeMesh(0.4);
-  cube1.rotation.x = 1.57 / 2;
-  cube2.rotation.x = 1.57 / 3;
-  cube2.rotation.y = 1.57 / 3;
-  cube2.position.x = 1.1;
-  _scene.add(cube1);
-  _scene.add(cube2);
+  for (let i = 0; i <= 4; i++) {
+    const cube = getCubeMesh(Math.random());
+    cube.position.set(Math.random(), Math.random(), Math.random());
+    cube.rotation.set(Math.random(), Math.random(), Math.random());
+    _scene.add(cube);
+  }
 };
 
 type DispatchEventType = "click" | "hover";
@@ -115,7 +113,7 @@ export const threeRenderer = (
   const light = new THREE.HemisphereLight(0xffffbb, 0x080820);
   scene.add(light);
 
-  camera.position.z = 2;
+  camera.position.z = 3;
 
   console.log(scene);
 
@@ -141,7 +139,7 @@ export const threeRenderer = (
     }
     if (selectedMesh) {
       selectedMesh.position.y += 0.01 * Math.sin(timeAlive / 1000);
-      selectedMesh.position.x += 0.01 * Math.sin(timeAlive / 1000);
+      selectedMesh.position.x += 0.01 * Math.sin(1.57 + timeAlive / 1000);
       // selectedMesh.rotation.x += 0.02;
       // selectedMesh.rotation.y += 0.02;
       // selectedMesh.rotation.z += 0.02;
