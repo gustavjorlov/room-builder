@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import "./App.css";
-import { threeRenderer } from "./three/setup";
+import { index as threeRenderer } from "./three/setup";
 
 const App = () => {
   const canvasEl = useRef<HTMLDivElement>(null);

@@ -26,6 +26,16 @@ const getCubeMesh = (
   return new THREE.Mesh(geometry, material);
 };
 
+const getFloor = (): Mesh<THREE.PlaneGeometry, THREE.MeshStandardMaterial> => {
+  const floor = new THREE.Mesh(
+    new THREE.PlaneGeometry(6, 6, 32, 32),
+    new THREE.MeshStandardMaterial({ color: 0x333333, side: THREE.DoubleSide })
+  );
+  floor.rotation.x = Math.PI / 2;
+  floor.position.y = -1;
+  return floor;
+};
+
 const buildWorld = (_scene: THREE.Scene) => {
   for (let i = 0; i <= 6; i++) {
     const cube = getCubeMesh(i / 20 + 0.3);
@@ -34,34 +44,31 @@ const buildWorld = (_scene: THREE.Scene) => {
     const childCube = getCubeMesh(i / 20 + 0.1);
     childCube.position.y = 1;
     cube.add(childCube);
-    _scene.add(cube);
+    // _scene.add(cube);
   }
-  const light = new THREE.PointLight(0xff0000, 1, 100);
-  light.position.set(1, 0, 2);
+
+  _scene.add(getFloor());
+
+  const light = new THREE.PointLight(0xffffff, 2, 100);
+  light.position.set(0, 0, 0);
   _scene.add(light);
+  const lightCube = new THREE.Mesh(
+    new THREE.SphereGeometry(0.03),
+    new THREE.MeshBasicMaterial({ color: 0xffffdd })
+  );
+  lightCube.position.set(0, 0, 0);
+  _scene.add(lightCube);
 
-  const light2 = new THREE.PointLight(0x00ff00, 1, 100);
-  light2.position.set(-1, 0, 0);
-  _scene.add(light2);
-
-  // const floor = new THREE.Mesh(
-  //   new THREE.PlaneGeometry(6, 6),
-  //   new THREE.MeshBasicMaterial({ color: 0xffff00, side: THREE.DoubleSide })
-  // );
-  // floor.rotation.x = Math.PI / 2;
-  // floor.position.y = -1;
-  // _scene.add(floor);
-
-  const gridHelper = new THREE.GridHelper(6, 15);
-  gridHelper.position.y = -1;
-  _scene.add(gridHelper);
+  // const light2 = new THREE.PointLight(0x00ff00, 1, 100);
+  // light2.position.set(-1, 0, 0);
+  // _scene.add(light2);
 
   // const light3 = new THREE.HemisphereLight(0xffffbb, 0x080820);
   // const helper = new THREE.HemisphereLightHelper(light3, 5);
   // _scene.add(helper);
 
-  _scene.add(new THREE.HemisphereLight(0xffffbb, 0x080820));
-  _scene.add(new THREE.DirectionalLight(0xff0000, 1));
+  // _scene.add(new THREE.HemisphereLight(0xffffbb, 0x080820));
+  // _scene.add(new THREE.DirectionalLight(0xffffff, 0.4));
 };
 
 type DispatchEventType = "click" | "hover";
@@ -114,10 +121,7 @@ const handleInteractions = (
   renderer.domElement.addEventListener("mousemove", onHover, false);
 };
 
-export const threeRenderer = (
-  width: number,
-  height: number
-): THREE.WebGLRenderer => {
+export const index = (width: number, height: number): THREE.WebGLRenderer => {
   let selectedMesh: THREE.Object3D | null = null;
   let hoveredMesh: THREE.Object3D | null = null;
 
@@ -147,24 +151,26 @@ export const threeRenderer = (
 
   const update = (timeAlive: number) => {
     if (hoveredMesh) {
-      ((hoveredMesh as THREE.Mesh)
-        .material as THREE.MeshStandardMaterial).color.set(0xdddddd);
+      console.log(hoveredMesh);
+
+      // ((hoveredMesh as THREE.Mesh)
+      //   .material as THREE.MeshStandardMaterial).color.set(0xdddddd);
       // rotate in world space coordinates https://discoverthreejs.com/book/first-steps/transformations/
-      hoveredMesh.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), 0.03);
+      // hoveredMesh.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), 0.03);
     } else {
-      scene.children
-        .filter((c) => c.type === "Mesh")
-        .forEach((c) => {
-          ((c as THREE.Mesh).material as THREE.MeshStandardMaterial).color.set(
-            0x888888
-          );
-        });
+      // scene.children
+      //   .filter((c) => c.type === "Mesh")
+      //   .forEach((c) => {
+      //     ((c as THREE.Mesh).material as THREE.MeshStandardMaterial).color.set(
+      //       0x888888
+      //     );
+      //   });
     }
-    if (selectedMesh) {
-      selectedMesh.position.y += 0.01 * Math.sin(timeAlive / 1000);
-      selectedMesh.position.x += 0.01 * Math.sin(1.57 + timeAlive / 1000);
-      selectedMesh.rotation.y += 0.02;
-    }
+    // if (selectedMesh) {
+    //   selectedMesh.position.y += 0.01 * Math.sin(timeAlive / 1000);
+    //   selectedMesh.position.x += 0.01 * Math.sin(1.57 + timeAlive / 1000);
+    //   selectedMesh.rotation.y += 0.02;
+    // }
   };
 
   animate(0);
