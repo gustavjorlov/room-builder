@@ -4,8 +4,8 @@ import { threeRenderer } from "./three/setup";
 
 const App = () => {
   const canvasEl = useRef<HTMLDivElement>(null);
-  const height = 300;
-  const width = 400;
+  const height = window.innerHeight - 100;
+  const width = window.innerWidth - 50;
   useEffect(() => {
     if (canvasEl && canvasEl.current) {
       const renderer = threeRenderer(width, height);

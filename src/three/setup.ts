@@ -27,10 +27,13 @@ const getCubeMesh = (
 };
 
 const buildWorld = (_scene: THREE.Scene) => {
-  for (let i = 0; i <= 4; i++) {
-    const cube = getCubeMesh(Math.random());
-    cube.position.set(Math.random(), Math.random(), Math.random());
-    cube.rotation.set(Math.random(), Math.random(), Math.random());
+  for (let i = 0; i <= 6; i++) {
+    const cube = getCubeMesh(i / 20 + 0.3);
+    cube.position.set((i * 2) / 3 - 2.2, 0, 0);
+    cube.rotation.set(i / 5, 0, 0);
+    const childCube = getCubeMesh(i / 20 + 0.1);
+    childCube.position.y = 1;
+    cube.add(childCube);
     _scene.add(cube);
   }
   const light = new THREE.PointLight(0xff0000, 1, 100);
@@ -41,13 +44,22 @@ const buildWorld = (_scene: THREE.Scene) => {
   light2.position.set(-1, 0, 0);
   _scene.add(light2);
 
-  const floor = new THREE.Mesh(
-    new THREE.PlaneGeometry(6, 6),
-    new THREE.MeshBasicMaterial({ color: 0xffff00, side: THREE.DoubleSide })
-  );
-  floor.rotation.x = Math.PI / 2;
-  floor.position.y = -1;
-  _scene.add(floor);
+  // const floor = new THREE.Mesh(
+  //   new THREE.PlaneGeometry(6, 6),
+  //   new THREE.MeshBasicMaterial({ color: 0xffff00, side: THREE.DoubleSide })
+  // );
+  // floor.rotation.x = Math.PI / 2;
+  // floor.position.y = -1;
+  // _scene.add(floor);
+
+  const gridHelper = new THREE.GridHelper(6, 15);
+  gridHelper.position.y = -1;
+  _scene.add(gridHelper);
+
+  // const light3 = new THREE.HemisphereLight(0xffffbb, 0x080820);
+  // const helper = new THREE.HemisphereLightHelper(light3, 5);
+  // _scene.add(helper);
+
   _scene.add(new THREE.HemisphereLight(0xffffbb, 0x080820));
   _scene.add(new THREE.DirectionalLight(0xff0000, 1));
 };
@@ -111,6 +123,8 @@ export const threeRenderer = (
 
   const { scene, camera, renderer } = setupScene(width, height);
 
+  console.log(scene);
+
   // TODO: develop this redux like thing
   const dispatch = (event: DispatchEvent) => {
     if (event.type === "click") {
@@ -135,6 +149,8 @@ export const threeRenderer = (
     if (hoveredMesh) {
       ((hoveredMesh as THREE.Mesh)
         .material as THREE.MeshStandardMaterial).color.set(0xdddddd);
+      // rotate in world space coordinates https://discoverthreejs.com/book/first-steps/transformations/
+      hoveredMesh.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), 0.03);
     } else {
       scene.children
         .filter((c) => c.type === "Mesh")
